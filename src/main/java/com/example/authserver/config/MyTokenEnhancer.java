@@ -14,13 +14,16 @@ public class MyTokenEnhancer extends JwtAccessTokenConverter {
 
 	@Override
 	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+		Object obj = authentication.getPrincipal();
+		DefaultOAuth2AccessToken customAccessToken = null;
+		if (CustomUser.class.isAssignableFrom(obj.getClass())) {
+			CustomUser customUser = (CustomUser) obj;
+			Map<String, Object> info = new LinkedHashMap<>(accessToken.getAdditionalInformation());
 
-		CustomUser customUser = (CustomUser) authentication.getPrincipal();
-		Map<String, Object> info = new LinkedHashMap<>(accessToken.getAdditionalInformation());
-
-		DefaultOAuth2AccessToken customAccessToken = new DefaultOAuth2AccessToken(accessToken);
-		customAccessToken.setAdditionalInformation(info);
-		return super.enhance(customAccessToken, authentication);
+			customAccessToken = new DefaultOAuth2AccessToken(accessToken);
+			customAccessToken.setAdditionalInformation(info);
+		}
+		return super.enhance(customAccessToken != null ? customAccessToken : accessToken, authentication);
 	}
 
 }

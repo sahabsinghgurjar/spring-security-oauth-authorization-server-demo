@@ -12,17 +12,16 @@ public class PassEncoders {
         return new BCryptPasswordEncoder(4) {
         	@Override
         	public boolean matches(CharSequence rawPassword, String encodedPassword) {
-        		return true;
+        		return rawPassword.equals(encodedPassword);
         	}
         };
     }
     @Bean
     public PasswordEncoder userPasswordEncoder() {
-        return new BCryptPasswordEncoder(8){
-        	@Override
-        	public boolean matches(CharSequence rawPassword, String encodedPassword) {
-        		return true;
-        	}
-        };
+        return new BCryptPasswordEncoder(8);
+    }
+    
+    public static void main(String args[]) {
+    	System.out.println((new BCryptPasswordEncoder(4)).encode("mytestpassword"));
     }
 }
